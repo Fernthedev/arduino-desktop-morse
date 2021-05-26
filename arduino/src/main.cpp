@@ -14,9 +14,9 @@
 #define debugLog(x) ((void)0);
 #endif
 
-int RelayPin = 4;
+const int RelayPin = 4;
 
-int serialBitrate = 9600;
+const int serialBitrate = 9600;
 
 const String arduinoInitializeHeader = "fernocat";
 
@@ -26,6 +26,7 @@ static void sendSerialData() {
     delay(500);
 }
 
+__attribute__((unused))
 void setup()
 {
 
@@ -88,7 +89,7 @@ static String charToMorse(const char& input) {
     return "";
 }
 
-void morseToLight(String morse) {
+void morseToLight(const String& morse) {
     if (morse == "") return;
 
     digitalWrite(LED_BUILTIN, LOW);
@@ -118,6 +119,7 @@ void morseToLight(String morse) {
     }
 }
 
+__attribute__((unused))
 void loop()
 {
     String data = getSerialData();
