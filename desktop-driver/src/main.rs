@@ -30,7 +30,7 @@ fn main() {
     println!("Found interfaces:");
     let interfaces = datalink::interfaces();
     for iface in &interfaces {
-        println!("{:?}", iface.ips);
+        println!("{}:{:?}", iface.description, iface.ips);
     }
 
     let arguments: Vec<String> = env::args()
