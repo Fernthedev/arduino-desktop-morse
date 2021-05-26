@@ -6,17 +6,25 @@
 #define LONG_PAUSE delay(600);
 #define LONG_PAUSE_END delay(450);
 
-#define DO_DEBUG
+//#define DO_DEBUG
 
 #ifdef DO_DEBUG
 #define debugLog(x)         Serial.println(x);
-#elif
-#define debugLog(x) ((void)0)
+#else
+#define debugLog(x) ((void)0);
 #endif
 
 int RelayPin = 4;
 
 int serialBitrate = 9600;
+
+const String arduinoInitializeHeader = "fernocat";
+
+static void sendSerialData() {
+    Serial.println(arduinoInitializeHeader.c_str());
+
+    delay(500);
+}
 
 void setup()
 {
@@ -28,7 +36,14 @@ void setup()
     pinMode((uint8_t) RelayPin, OUTPUT);
 
     Serial.begin(serialBitrate);
+
+    while (!Serial); // wait for serial port to connect. Needed for native USB
+
+    sendSerialData();
 }
+
+
+
 static String getSerialData() {
     String data = "";
 
@@ -58,10 +73,10 @@ static String charToMorse(const char& input) {
     auto upperInput = (char) toUpperCase(input);
 
 
-    static char text[36] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+    const static char text[36] = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
                      '1','2','3','4','5','6','7','8', '9','0' };
 
-    static String morse[36] = {".-","-...","-.-.","-..",".","..-","--.","....","..",".---","-.-",".-..","--","-.","---",".--.","--.-",".-.","...","-","..-","...-",".--","-..-","-.--","--..",
+    const static String morse[36] = {".-","-...","-.-.","-..",".","..-","--.","....","..",".---","-.-",".-..","--","-.","---",".--.","--.-",".-.","...","-","..-","...-",".--","-..-","-.--","--..",
                              ".----","..---","...--","....-",".....","-....","--....","---..","----.","-----"};
 
     // if only we could hash map this efficiently, oh well
@@ -127,7 +142,7 @@ void loop()
         }
 
         SHORT_PAUSE
-        digitalWrite(LED_BUILTIN, LOW);
+        digitalWrite(LED_BUILTIN, HIGH);
 
         debugLog("Finished writing")
 
@@ -136,4 +151,8 @@ void loop()
         // Reconfirm
         Serial.println(data);
     }
+
+    sendSerialData();
+    delay(100);
+    digitalWrite(LED_BUILTIN, LOW);
 }
